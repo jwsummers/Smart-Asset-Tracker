@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+.env
+
+# Logs
+*.log
+
+# Prisma
+prisma/migrations/
+
+# Frontend
+dist/
+.next/
+build/
