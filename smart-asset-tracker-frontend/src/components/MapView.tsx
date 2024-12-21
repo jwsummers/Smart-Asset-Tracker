@@ -1,13 +1,15 @@
-import { useEffect, useRef } from 'react';
-import MapView from '@arcgis/core/views/MapView';
-import WebMap from '@arcgis/core/WebMap';
-import Graphic from '@arcgis/core/Graphic';
-import Point from '@arcgis/core/geometry/Point';
+import { useEffect, useRef } from "react";
+import MapView from "@arcgis/core/views/MapView";
+import WebMap from "@arcgis/core/WebMap";
+import Graphic from "@arcgis/core/Graphic";
+import Point from "@arcgis/core/geometry/Point";
 
 interface Asset {
   latitude: number;
   longitude: number;
   name: string;
+  type: string;
+  status: string;
 }
 
 const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
@@ -16,7 +18,7 @@ const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
   useEffect(() => {
     if (mapDiv.current) {
       const webMap = new WebMap({
-        basemap: 'streets-navigation-vector', // Choose a basemap style
+        basemap: "streets-navigation-vector", // Choose a basemap style
       });
 
       const view = new MapView({
@@ -34,25 +36,29 @@ const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
         });
 
         const symbol = {
-          type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-          color: 'blue',
+          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+          color: "blue",
           outline: {
-            color: 'white',
+            color: "white",
             width: 1,
           },
         };
 
-        // Correctly create the Graphic object
+        // Create the popup template
+        const popupTemplate = {
+          title: asset.name,
+          content: `
+            <p><strong>Type:</strong> ${asset.type}</p>
+            <p><strong>Status:</strong> ${asset.status}</p>
+            <p><strong>Coordinates:</strong> [${asset.latitude}, ${asset.longitude}]</p>
+          `,
+        };
+
+        // Create the Graphic object with the popup
         const graphic = new Graphic({
           geometry: point,
           symbol: symbol,
-          attributes: {
-            name: asset.name,
-          },
-          popupTemplate: {
-            title: "{name}",
-            content: "Asset located at [{longitude}, {latitude}]",
-          },
+          popupTemplate: popupTemplate,
         });
 
         view.graphics.add(graphic);

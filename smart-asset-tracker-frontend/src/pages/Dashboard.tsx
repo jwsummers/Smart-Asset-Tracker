@@ -1,10 +1,20 @@
-import { useEffect, useState } from 'react';
-import { getAssets } from '../services/api';
-import AddAsset from '../components/AddAsset';
-import ArcGISMap from '../components/MapView';
+import { useEffect, useState } from "react";
+import { getAssets } from "../services/api";
+import AddAsset from "../components/AddAsset";
+import ArcGISMap from "../components/MapView";
+import React from "react";
 
 const Dashboard = () => {
-  const [assets, setAssets] = useState<any[]>([]);
+  interface Asset {
+    id: string;
+    name: string;
+    type: string;
+    status: string;
+    latitude: number;
+    longitude: number;
+  }
+
+  const [assets, setAssets] = useState<Asset[]>([]);
 
   const fetchAssets = async () => {
     const data = await getAssets();
