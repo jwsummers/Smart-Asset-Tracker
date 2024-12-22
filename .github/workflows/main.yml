@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Node.js CI/CD
 
 on:
   push:
@@ -17,16 +17,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
-      - name: Setup Node.js
+      # Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
+      # Install and test Backend
+      - name: Install and test backend
+        working-directory: ./smart-asset-tracker-backend
+        run: |
+          npm install
+          npm test
 
-      # Run tests
-      - name: Run tests
-        run: npm test
+      # Install and test Frontend
+      - name: Install and test frontend
+        working-directory: ./smart-asset-tracker-frontend
+        run: |
+          npm install
+          npm test
+
+      # Build Frontend
+      - name: Build frontend
+        working-directory: ./smart-asset-tracker-frontend
+        run: |
+          npm run build
