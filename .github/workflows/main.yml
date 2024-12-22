@@ -12,6 +12,9 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -35,8 +38,6 @@ jobs:
       - name: Run backend tests
         run: npm test
         working-directory: ./smart-asset-tracker-backend
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # Install and test Frontend
       - name: Install and test frontend
