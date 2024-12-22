@@ -24,11 +24,19 @@ jobs:
           node-version: 16
 
       # Install and test Backend
-      - name: Install and test backend
+      - name: Install dependencies
+        run: npm install
         working-directory: ./smart-asset-tracker-backend
-        run: |
-          npm install
-          npm test
+
+      - name: Set up Prisma
+        run: npx prisma migrate deploy
+        working-directory: ./smart-asset-tracker-backend
+
+      - name: Run backend tests
+        run: npm test
+        working-directory: ./smart-asset-tracker-backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # Install and test Frontend
       - name: Install and test frontend
