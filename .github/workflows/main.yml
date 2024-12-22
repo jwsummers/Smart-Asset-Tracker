@@ -12,9 +12,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -26,7 +23,7 @@ jobs:
         with:
           node-version: 16
 
-      # Install and test Backend
+      # Install and Test Backend
       - name: Install dependencies
         run: npm install
         working-directory: ./smart-asset-tracker-backend
@@ -34,20 +31,25 @@ jobs:
       - name: Set up Prisma
         run: npx prisma migrate deploy
         working-directory: ./smart-asset-tracker-backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run backend tests
         run: npm test
         working-directory: ./smart-asset-tracker-backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      # Install and test Frontend
-      - name: Install and test frontend
+      # Install and Test Frontend
+      - name: Install dependencies
+        run: npm install
         working-directory: ./smart-asset-tracker-frontend
-        run: |
-          npm install
-          npm test
+
+      - name: Run frontend tests
+        run: npm test
+        working-directory: ./smart-asset-tracker-frontend
 
       # Build Frontend
       - name: Build frontend
+        run: npm run build
         working-directory: ./smart-asset-tracker-frontend
-        run: |
-          npm run build
