@@ -23,8 +23,8 @@ jobs:
         with:
           node-version: 16
 
-      # Install and Test Backend
-      - name: Install dependencies
+      # Install and test Backend
+      - name: Install backend dependencies
         run: npm install
         working-directory: ./smart-asset-tracker-backend
 
@@ -40,16 +40,14 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      # Install and Test Frontend
-      - name: Install dependencies
-        run: npm install
+      # Install and test Frontend
+      - name: Install frontend dependencies and test
         working-directory: ./smart-asset-tracker-frontend
-
-      - name: Run frontend tests
-        run: npm test
-        working-directory: ./smart-asset-tracker-frontend
+        run: |
+          npm install
+          npm test
 
       # Build Frontend
       - name: Build frontend
-        run: npm run build
         working-directory: ./smart-asset-tracker-frontend
+        run: npm run build
