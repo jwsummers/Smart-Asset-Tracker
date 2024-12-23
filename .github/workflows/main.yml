@@ -17,35 +17,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
+      # Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # Install dependencies for backend
+      # Test database connection with IPv4
+      - name: Test IPv4 database connection
+        run: |
+          echo "Testing IPv4 database connection..."
+          timeout 5 bash -c "echo > /dev/tcp/$(echo $DATABASE_URL | sed -E 's|^.*://[^@]*@([^:/]+).*|\1|')/5432" || exit 2
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # Install Backend Dependencies
       - name: Install dependencies
         run: npm install
         working-directory: ./smart-asset-tracker-backend
-
-      # Debug database connection
-      - name: Debug database connection
-        run: |
-          echo "Testing IPv4 database connection..."
-          ping -c 4 -4 db.udajbiuinqyoycqoyjjk.supabase.co
-          echo "Attempting to connect to database..."
-          PGPASSWORD=${{ secrets.DB_PASSWORD }} psql -h db.udajbiuinqyoycqoyjjk.supabase.co -p 5432 -U postgres -d postgres -c '\l'
-        env:
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      # Wait for DB to be reachable
-      - name: Wait for DB to be reachable
-        run: |
-          for i in {1..10}; do
-            nc -zv -4 db.udajbiuinqyoycqoyjjk.supabase.co 5432 && break
-            echo "Waiting for database to be reachable..."
-            sleep 5
-          done
 
       # Set up Prisma
       - name: Set up Prisma
@@ -54,21 +43,21 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      # Run backend tests
       - name: Run backend tests
         run: npm test
         working-directory: ./smart-asset-tracker-backend
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      # Install and test frontend
+      # Install and Test Frontend
       - name: Install and test frontend
         working-directory: ./smart-asset-tracker-frontend
         run: |
           npm install
           npm test
 
-      # Build frontend
+      # Build Frontend
       - name: Build frontend
         working-directory: ./smart-asset-tracker-frontend
-        run: npm run build
+        run: |
+          npm run build
