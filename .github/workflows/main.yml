@@ -17,19 +17,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup Node.js
+      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
       # Install and test Backend
-      - name: Install backend dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: ./smart-asset-tracker-backend
 
-      - name: Set up Prisma
-        run: npx prisma migrate deploy
+      - name: Wait for DB to be reachable
+        run: |
+          for i in {1..10}; do
+            nc -z -v -w5 db.udajbiuinqyoycqoyjjk.supabase.co 5432 && break
+            echo "Waiting for database to be reachable..."
+            sleep 5
+          done
+
+      - name: Test database connection
+        run: |
+          echo "Testing database connection..."
+          psql "${{ secrets.DATABASE_URL }}" -c '\l'
+
+      - name: Set up Prisma (debug)
+        run: |
+          echo "Testing connection to DATABASE_URL=${{ secrets.DATABASE_URL }}"
+          npx prisma migrate deploy
         working-directory: ./smart-asset-tracker-backend
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -41,7 +56,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # Install and test Frontend
-      - name: Install frontend dependencies and test
+      - name: Install and test frontend
         working-directory: ./smart-asset-tracker-frontend
         run: |
           npm install
@@ -50,4 +65,5 @@ jobs:
       # Build Frontend
       - name: Build frontend
         working-directory: ./smart-asset-tracker-frontend
-        run: npm run build
+        run: |
+          npm run build
