@@ -21,7 +21,7 @@ The **Smart Asset Tracker** is a full-stack web application designed to manage a
   - **Backend**: Node.js, Express, Prisma ORM
   - **Database**: PostgreSQL
   - **Mapping**: ArcGIS JavaScript API
-  - **Deployment**: Netlify (frontend), Render (backend)
+  - **Deployment**: Netlify (frontend), Neon (backend)
 
 ---
 

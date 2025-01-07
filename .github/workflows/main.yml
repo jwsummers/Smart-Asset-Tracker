@@ -23,10 +23,10 @@ jobs:
         with:
           node-version: 16
 
-      # Test database connection with IPv4
-      - name: Test IPv4 database connection
+      # Test database connection
+      - name: Test database connection
         run: |
-          echo "Testing IPv4 database connection..."
+          echo "Testing database connection..."
           timeout 5 bash -c "echo > /dev/tcp/$(echo $DATABASE_URL | sed -E 's|^.*://[^@]*@([^:/]+).*|\1|')/5432" || exit 2
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
