@@ -61,3 +61,8 @@ jobs:
         working-directory: ./smart-asset-tracker-frontend
         run: |
           npm run build
+
+      # Run ESLint
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: ./smart-asset-tracker-backend
