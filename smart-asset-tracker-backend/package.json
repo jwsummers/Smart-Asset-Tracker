@@ -1,10 +1,11 @@
 {
   "name": "smart-asset-tracker-backend",
   "version": "1.0.0",
+  "type": "module", 
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "dev": "nodemon src/index.js",
     "lint": "eslint ."
   },

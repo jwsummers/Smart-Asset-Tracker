@@ -10,7 +10,7 @@ beforeAll(() => {
 
 afterAll((done) => {
   server.close(() => {
-    done(); // Ensure the server is properly closed after all tests
+    done();
   });
 });
 
