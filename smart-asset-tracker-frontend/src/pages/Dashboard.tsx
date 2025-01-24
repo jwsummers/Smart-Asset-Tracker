@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { getAssets } from "../services/api";
-import AddAsset from "../components/AddAsset";
-import ArcGISMap from "../components/MapView";
-import React from "react";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAssets } from '../services/api';
+import AddAsset from '../components/AddAsset';
+import ArcGISMap from '../components/MapView';
 
 const Dashboard = () => {
   interface Asset {
@@ -15,6 +15,7 @@ const Dashboard = () => {
   }
 
   const [assets, setAssets] = useState<Asset[]>([]);
+  const navigate = useNavigate();
 
   const fetchAssets = async () => {
     const data = await getAssets();
@@ -22,24 +23,29 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchAssets();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login'); // Redirect to login if not authenticated
+    } else {
+      fetchAssets();
+    }
   }, []);
 
   return (
-    <div className="container mx-auto p-6 bg-lightGray text-navy rounded-md shadow-lg">
-      <h2 className="text-center text-3xl mb-6">Assets Dashboard</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className='container mx-auto p-6 bg-lightGray text-navy rounded-md shadow-lg'>
+      <h2 className='text-center text-3xl mb-6'>Assets Dashboard</h2>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {/* Add Asset Form */}
         <AddAsset onAssetAdded={fetchAssets} />
 
         {/* Current Assets List */}
         <div>
-          <h3 className="text-lg font-bold mb-4">Current Assets</h3>
-          <ul className="space-y-4">
+          <h3 className='text-lg font-bold mb-4'>Current Assets</h3>
+          <ul className='space-y-4'>
             {assets.map((asset) => (
               <li
                 key={asset.id}
-                className="p-4 bg-white text-navy rounded-md shadow"
+                className='p-4 bg-white text-navy rounded-md shadow'
               >
                 <strong>{asset.name}</strong> ({asset.type}) - {asset.status}
               </li>
@@ -49,8 +55,8 @@ const Dashboard = () => {
       </div>
 
       {/* ArcGIS Map */}
-      <div className="mt-6">
-        <h3 className="text-lg font-bold mb-4">Asset Map</h3>
+      <div className='mt-6'>
+        <h3 className='text-lg font-bold mb-4'>Asset Map</h3>
         <ArcGISMap assets={assets} />
       </div>
     </div>

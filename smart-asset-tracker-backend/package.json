@@ -1,12 +1,12 @@
 {
   "name": "smart-asset-tracker-backend",
   "version": "1.0.0",
-  "type": "module", 
-  "main": "index.js",
+  "type": "module",
+  "main": "index.ts",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node dist/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "dev": "nodemon src/index.js",
+    "dev": "NODE_OPTIONS=--loader=ts-node/esm nodemon src/index.ts",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -15,13 +15,19 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",
@@ -33,6 +39,8 @@
     "prisma": "^5.22.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.19.1"
   }
 }

@@ -1,37 +1,48 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login, demoLogin, register } = useAuth(); // Use functions from AuthContext
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!response.ok) throw new Error('Invalid credentials');
+      await login(email, password); // Call the login function from AuthContext
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Failed to login. Please try again.');
     }
   };
 
   const handleDemoLogin = async () => {
     try {
-      const response = await fetch('/api/demo-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (!response.ok) throw new Error('Unable to login as demo user');
+      await demoLogin(); // Call the demoLogin function from AuthContext
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message);
+      setError(
+        err.message || 'Unable to login as demo user. Please try again.'
+      );
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!email || !password) {
+      setError('Email and password are required.');
+      return;
+    }
+
+    try {
+      await register(email, password); // Call the register function from AuthContext
+      alert('Registration successful! You can now log in.');
+      setEmail('');
+      setPassword('');
+    } catch (err: any) {
+      setError(err.message || 'Failed to register. Please try again.');
     }
   };
 
@@ -50,7 +61,7 @@ const LoginPage = () => {
             <input
               type='email'
               placeholder='Enter your email'
-              className='w-full border p-2 rounded focus:ring focus:ring-orange focus:outline-none'
+              className='w-full border p-2 rounded text-navy focus:ring focus:ring-orange focus:outline-none'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -61,7 +72,7 @@ const LoginPage = () => {
             <input
               type='password'
               placeholder='Enter your password'
-              className='w-full border p-2 rounded focus:ring focus:ring-orange focus:outline-none'
+              className='w-full border p-2 rounded text-navy focus:ring focus:ring-orange focus:outline-none'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -75,12 +86,18 @@ const LoginPage = () => {
             Login
           </button>
         </form>
-        <div className='mt-4 text-center'>
+        <div className='mt-4 text-center space-y-3'>
           <button
             onClick={handleDemoLogin}
-            className='bg-orange text-white px-4 py-2 rounded shadow hover:bg-navy transition-colors'
+            className='bg-orange text-white px-4 py-2 rounded shadow hover:bg-navy transition-colors w-full'
           >
             Login as Demo
+          </button>
+          <button
+            onClick={handleRegister}
+            className='bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-700 transition-colors w-full'
+          >
+            Register
           </button>
         </div>
       </div>

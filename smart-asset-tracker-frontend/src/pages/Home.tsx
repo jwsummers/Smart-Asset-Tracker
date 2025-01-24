@@ -1,7 +1,22 @@
 import { FaMapMarkerAlt, FaFilter, FaLock } from 'react-icons/fa';
 import { SiReact, SiTailwindcss, SiArcgis } from 'react-icons/si';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const { demoLogin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleDemoLogin = async () => {
+    try {
+      await demoLogin();
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Failed to log in as demo user:', error);
+      alert('Unable to log in as demo user. Please try again.');
+    }
+  };
+
   return (
     <div className='min-h-screen flex flex-col'>
       <main className='flex-grow'>
@@ -22,12 +37,12 @@ const HomePage = () => {
             >
               Login
             </a>
-            <a
-              href='/dashboard?demo=true'
+            <button
+              onClick={handleDemoLogin}
               className='bg-white hover:transform hover:scale-105 text-navy px-6 py-3 rounded-lg shadow-lg text-lg font-semibold'
             >
               Demo
-            </a>
+            </button>
           </div>
         </section>
 
