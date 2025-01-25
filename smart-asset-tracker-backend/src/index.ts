@@ -7,8 +7,15 @@ import { login, demoLogin, register } from './routes/auth.js';
 config();
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || '*', // Replace '*' with your Vercel frontend URL for production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
-app.use(cors());
+// Apply CORS middleware
+app.use(cors(corsOptions));
 app.use(json());
 
 // Health Check
