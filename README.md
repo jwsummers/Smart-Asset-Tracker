@@ -8,20 +8,27 @@ The **Smart Asset Tracker** is a full-stack web application designed to manage a
 
 - **Asset Management**: Create, retrieve, update, and delete assets.
 - **Interactive Map**: Visualize asset locations on a dynamic map powered by the ArcGIS JavaScript API.
+- **Demo Login**: Easily log in as a demo user to explore the app’s features.
 - **Testing**:
-  - Unit tests and integration tests are implemented using **Jest** for both frontend and backend.
+  - Unit tests and integration tests implemented using **Jest** for both frontend and backend.
   - Ensure reliability and robustness by validating critical functionality with automated tests.
 - **Continuous Integration/Continuous Deployment (CI/CD)**:
-  - **GitHub Actions** is used to automate testing and deployment workflows.
+  - **GitHub Actions** automates testing and deployment workflows.
   - Automatic deployments on:
     - **Netlify** (frontend)
-    - **Render** (backend)
+    - **Render** (backend).
 - **Tech Stack**:
-  - **Frontend**: React, Vite, Tailwind CSS, TypeScript
-  - **Backend**: Node.js, Express, Prisma ORM
-  - **Database**: PostgreSQL
-  - **Mapping**: ArcGIS JavaScript API
-  - **Deployment**: Netlify (frontend), Neon (backend)
+  - **Frontend**: React, Vite, Tailwind CSS, TypeScript.
+  - **Backend**: Node.js, Express, Prisma ORM.
+  - **Database**: PostgreSQL.
+  - **Mapping**: ArcGIS JavaScript API.
+  - **Deployment**: Netlify (frontend), Render (backend).
+
+---
+
+## Live Demo
+
+You can explore the live version of the app here: [Smart Asset Tracker](https://smrt-kappa.vercel.app/)
 
 ---
 
@@ -30,5 +37,6 @@ The **Smart Asset Tracker** is a full-stack web application designed to manage a
 ### Prerequisites
 
 - **Node.js** (v16+)
-- **PostgreSQL** (or a cloud database like Supabase)
+- **PostgreSQL** (or a cloud database like Supabase or Neon)
 - **Git**
+- **ArcGIS JavaScript API** (via CDN or an API key for advanced features)
