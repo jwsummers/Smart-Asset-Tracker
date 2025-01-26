@@ -9,7 +9,7 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || '*', // Replace '*' with your Vercel frontend URL for production
+  origin: process.env.FRONTEND_URL || 'https://smrt-kappa.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };

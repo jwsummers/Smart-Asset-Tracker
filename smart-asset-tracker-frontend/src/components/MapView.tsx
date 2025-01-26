@@ -1,10 +1,17 @@
-import { useEffect, useRef } from 'react';
+import {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+} from 'react';
 import MapView from '@arcgis/core/views/MapView';
 import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 interface Asset {
+  id: string;
   latitude: number;
   longitude: number;
   name: string;
@@ -12,28 +19,48 @@ interface Asset {
   status: string;
 }
 
-const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
+interface ArcGISMapProps {
+  assets: Asset[];
+}
+
+const ArcGISMap = forwardRef(({ assets }: ArcGISMapProps, ref) => {
   const mapDiv = useRef<HTMLDivElement>(null);
+  const mapViewRef = useRef<MapView | null>(null);
+  const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
+  const [highlightedGraphic, setHighlightedGraphic] = useState<Graphic | null>(
+    null
+  );
 
   useEffect(() => {
     if (mapDiv.current) {
-      // Create a map instance
       const map = new Map({
         basemap: 'osm',
       });
 
-      // Create a map view
       const view = new MapView({
         container: mapDiv.current,
         map: map,
-        center: [-98.5795, 39.8283], // Center on the USA
+        center: [-98.5795, 39.8283],
         zoom: 4,
       });
 
-      // Create a graphics layer for displaying assets
-      const graphicsLayer = new GraphicsLayer();
+      mapViewRef.current = view;
 
-      // Add assets as graphics to the layer
+      const graphicsLayer = new GraphicsLayer();
+      map.add(graphicsLayer);
+      graphicsLayerRef.current = graphicsLayer;
+
+      return () => {
+        view.destroy();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (graphicsLayerRef.current) {
+      const graphicsLayer = graphicsLayerRef.current;
+      graphicsLayer.removeAll();
+
       assets.forEach((asset) => {
         const point = {
           type: 'point',
@@ -44,9 +71,15 @@ const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
 
         const symbol = {
           type: 'simple-marker',
-          color: asset.status.toLowerCase() === 'active' ? 'green' : 'orange',
+          color:
+            highlightedGraphic?.attributes?.id === asset.id
+              ? 'blue'
+              : asset.status.toLowerCase() === 'active'
+              ? 'green'
+              : 'orange',
+          size: highlightedGraphic?.attributes?.id === asset.id ? 12 : 8,
           outline: {
-            width: 0.5,
+            width: 1,
             color: 'white',
           },
         };
@@ -61,25 +94,43 @@ const ArcGISMap = ({ assets }: { assets: Asset[] }) => {
 
         const graphic = new Graphic({
           geometry: point,
-          symbol: symbol,
+          symbol,
           attributes: asset,
-          popupTemplate: popupTemplate,
+          popupTemplate,
         });
 
         graphicsLayer.add(graphic);
       });
-
-      // Add the graphics layer to the map
-      map.add(graphicsLayer);
-
-      // Cleanup on component unmount
-      return () => {
-        view.destroy();
-      };
     }
-  }, [assets]);
+  }, [assets, highlightedGraphic]);
 
-  return <div ref={mapDiv} className='h-96 w-full rounded-md shadow'></div>;
-};
+  useImperativeHandle(ref, () => ({
+    focusAsset: (id: string) => {
+      if (mapViewRef.current && graphicsLayerRef.current) {
+        const graphics = graphicsLayerRef.current.graphics;
+        const graphic = graphics.find((g) => g.attributes.id === id);
+
+        if (graphic) {
+          const pointGeometry = graphic.geometry as __esri.Point; // Explicitly cast to Point
+          setHighlightedGraphic(graphic); // Update the highlighted graphic
+          mapViewRef.current.goTo(pointGeometry).then(() => {
+            mapViewRef.current?.popup?.open({
+              features: [graphic],
+              location: pointGeometry,
+            });
+          });
+        }
+      }
+    },
+  }));
+
+  return (
+    <div
+      id='map-container'
+      ref={mapDiv}
+      className='h-full w-full rounded-md shadow'
+    ></div>
+  );
+});
 
 export default ArcGISMap;

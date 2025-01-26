@@ -19,7 +19,6 @@ const AddAsset = ({ onAssetAdded }: { onAssetAdded: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Retrieve the token from localStorage
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -28,9 +27,7 @@ const AddAsset = ({ onAssetAdded }: { onAssetAdded: () => void }) => {
     }
 
     try {
-      // Pass the token and asset data to the API
       await createAsset(asset, token);
-
       alert('Asset added successfully!');
       setAsset({
         name: '',
@@ -39,8 +36,7 @@ const AddAsset = ({ onAssetAdded }: { onAssetAdded: () => void }) => {
         latitude: '',
         longitude: '',
       });
-
-      onAssetAdded(); // Callback to refresh the asset list
+      onAssetAdded(); // Refresh the list
     } catch (error) {
       console.error('Error adding asset:', error);
       alert('Failed to add asset. Please try again.');
@@ -75,15 +71,18 @@ const AddAsset = ({ onAssetAdded }: { onAssetAdded: () => void }) => {
           <option value='Equipment'>Equipment</option>
           <option value='Building'>Building</option>
         </select>
-        <input
-          type='text'
+        <select
           name='status'
           value={asset.status}
           onChange={handleChange}
-          placeholder='Status (e.g., Active, Inactive)'
           className='w-full p-2 border border-lightGray rounded-md focus:outline-none focus:ring-2 focus:ring-orange'
           required
-        />
+        >
+          <option value=''>Select Status</option>
+          <option value='Active'>Active</option>
+          <option value='Inactive'>Inactive</option>
+          <option value='In Service/Repair'>In Service/Repair</option>
+        </select>
         <input
           type='number'
           name='latitude'
