@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import { config } from 'dotenv';
 import assetRoutes from './routes/assets.js';
 import { login, demoLogin, register } from './routes/auth.js';
@@ -8,11 +8,23 @@ config();
 const app = express();
 
 // CORS Configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'https://smrt-kappa.vercel.app',
+const allowedOrigins: string[] = [
+  'https://smrt-kappa.vercel.app',
+  'http://localhost:5173',
+];
+
+const corsOptions: CorsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
 
 // Apply CORS middleware
 app.use(cors(corsOptions));

@@ -142,7 +142,7 @@ const Dashboard = () => {
       </div>
 
       {/* ArcGIS Map */}
-      <div className='mt-6 h-[600px]'>
+      <div className='mt-6 overflow-hidden rounded-lg border border-gray-300'>
         <h3 className='text-lg font-bold mb-4'>Asset Map</h3>
         <ArcGISMap assets={assets} ref={focusAssetRef} />
       </div>
