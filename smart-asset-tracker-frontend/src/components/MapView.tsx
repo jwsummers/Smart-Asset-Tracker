@@ -128,7 +128,7 @@ const ArcGISMap = forwardRef(({ assets }: ArcGISMapProps, ref) => {
     <div
       id='map-container'
       ref={mapDiv}
-      className='h-full w-full rounded-md shadow'
+      className='h-[500px] w-full rounded-md shadow'
     ></div>
   );
 });

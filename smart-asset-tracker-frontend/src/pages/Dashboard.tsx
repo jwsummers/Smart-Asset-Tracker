@@ -142,8 +142,8 @@ const Dashboard = () => {
       </div>
 
       {/* ArcGIS Map */}
+      <h3 className='text-lg font-bold mt-4'>Asset Map</h3>
       <div className='mt-6 overflow-hidden rounded-lg border border-gray-300'>
-        <h3 className='text-lg font-bold mb-4'>Asset Map</h3>
         <ArcGISMap assets={assets} ref={focusAssetRef} />
       </div>
       {isModalOpen && currentAsset && (
