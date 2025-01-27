@@ -7,26 +7,24 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login, demoLogin, register } = useAuth(); // Use functions from AuthContext
+  const { login, demoLogin, register } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password); // Call the login function from AuthContext
+      await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Failed to login. Please try again.');
+      setError(err.message || 'Failed to login.');
     }
   };
 
   const handleDemoLogin = async () => {
     try {
-      await demoLogin(); // Call the demoLogin function from AuthContext
+      await demoLogin();
       navigate('/dashboard');
     } catch (err: any) {
-      setError(
-        err.message || 'Unable to login as demo user. Please try again.'
-      );
+      setError(err.message || 'Failed to login as demo user.');
     }
   };
 
@@ -35,14 +33,13 @@ const LoginPage = () => {
       setError('Email and password are required.');
       return;
     }
-
     try {
-      await register(email, password); // Call the register function from AuthContext
+      await register(email, password);
       alert('Registration successful! You can now log in.');
       setEmail('');
       setPassword('');
     } catch (err: any) {
-      setError(err.message || 'Failed to register. Please try again.');
+      setError(err.message || 'Failed to register.');
     }
   };
 
